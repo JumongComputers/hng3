@@ -1,6 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import { baseConfig } from '../config/db-config';
 import Organization from './organization.model'; // Import Organization model for association
+import UserOrganization from './userOrganization.model';
 
 class User extends Model {
     public userId!: string;
@@ -11,9 +12,9 @@ class User extends Model {
     public phone!: string;
     public orgId?: string;
 
-    static associate(models: any) {
-        User.belongsToMany(models.Organization, { through: models.UserOrganization });
-    }
+    // static associate(models: any) {
+    //     User.belongsToMany(models.Organization, { through: models.UserOrganization });
+    // }
 }
 
 User.init(
@@ -55,4 +56,6 @@ User.init(
     }
 );
 
+
+User.belongsToMany(Organization, { through: UserOrganization });
 export default User;
