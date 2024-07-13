@@ -1,9 +1,11 @@
+import { IUser } from './../../types/index';
 import jwt  from 'jsonwebtoken';
 import Exception from "../../exception"
 import bcrypt from "bcryptjs"
 import User from "../../models/user.model"
 import ERROR_MESSAGES from "../../constant/constants"
-import { IUser } from '../../types';
+// import { IUser } from '../../types';
+import { string } from 'joi';
 
 
 class UserService {
@@ -17,17 +19,24 @@ class UserService {
         }
     
         const hashedPassword = await bcrypt.hash(userData.password, 10) 
-        // const payload = {
-        //     user.firstName: userData.firstName,
-        //     user.lastName: userData.lastName,
-        //     user.email: userData.email,
-        //     user.phone: userData.phone,
-        // }
-        const user = await User.create({
-            user.firstName: userData.firstName,
-            password: hashedPassword,
-        })
-     
+
+        const userd ={
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          email: userData.email,
+          phone: userData.phone,
+          password: hashedPassword,
+        }
+       
+        const user = await User.create(
+            userd
+        )
+        
+        const payload = {
+          id: user.id,
+          email: user.email,
+          password:hashedPassword
+        }
         const jwtSecret = process.env.JWT_SECRET as string;
         
         const accessToken = jwt.sign(payload, jwtSecret, {
@@ -74,14 +83,14 @@ class UserService {
         return { accessToken, user };
       }
     
-    async getUsers(id?: string): Promise<IUser> {
+    async getUsers(id: string): Promise<IUser> {
       
-          const user = await User.findOne({ where: { id } }); // Assuming Sequelize
+          const user = await User.findOne({ where: { userId:id } }); // Assuming Sequelize
           
         if (!user) {
             throw new Exception(ERROR_MESSAGES.USER_NOT_FOUND, 422)
           } else {
-        return user  
+        return user as IUser;
         }
       }
     

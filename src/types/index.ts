@@ -1,5 +1,5 @@
 export interface IUser {
-    userId: string;
+    userId?: string;
     firstName: string;
     lastName: string;
     email: string;
@@ -12,9 +12,11 @@ export interface IUser {
 
 export interface IOrganization {
     orgId?: string;
-    name?: string ;
-    description?: string;
-    
+    name: string;
+    description: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+    deletedAt?: Date;
   }
 
 export interface IUserOrgy {

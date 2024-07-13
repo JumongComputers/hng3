@@ -36,13 +36,15 @@ class UserController {
           statusCode: 400,
         };
       }
+      
 
+      const userOrgdata = {
+            name: `${user.firstName}'s organisation`,
+            description: ''
+      }
       // Concatenate user.firstName and organizationData.name
     //   const { description, } = req.body;
-      const organization = await organizationService.createOrganization({
-        name: `${user.firstName}'s organisation`,
-        
-      }, );
+      const organization = await organizationService.createOrganization(userOrgdata );
 
       if (!organization) {
         throw {

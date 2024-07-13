@@ -14,15 +14,15 @@ class OrganizationService {
     if (existingOrganization) {
       throw new Exception(ERROR_MESSAGES.ORGANIZATION_EXISTS, 422);
     }
-      if (organizationData){
-        const organization = await Organization.create({
-          name: organizationData.name as string || undefined, 
-          description: organizationData.description,
-        });
 
-        return organization;
-      }
+    const orgd = {
+      name: organizationData.name,
+      description: organizationData.description,
+    }
 
+    const organization = await Organization.create(orgd);
+
+    return organization;
   }
 
   async getOrganization(): Promise<IOrganization[] | null> {
@@ -68,11 +68,11 @@ class OrganizationService {
 
     // Create the user-organization association
     const userOrganizationAttributes = {
-      userId:userId as string,
-      orgId:orgId as string,
+      userId:userId ,
+      orgId:orgId ,
     };
 
-    const userInOrganization = await UserOrganization.create({...userOrganizationAttributes});
+    const userInOrganization = await UserOrganization.create(userOrganizationAttributes);
 
     return userInOrganization;
   }
