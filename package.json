@@ -3,13 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/server.js",
-  
   "scripts": {
     "start": "node dist/server.js",
     "build": "tsc",
     "dev": "nodemon --exec ts-node src/server.ts",
     "nodemon": "nodemon --exec ts-node src/server.ts",
-   "migrate": "npx sequelize-cli db:migrate --config src/config/db.config.cjs --migrations-path dist/migrations",
+    "migrate": "npx sequelize-cli db:migrate --config src/config/db.config.cjs --migrations-path dist/migrations",
     "rollback": "npx sequelize-cli db:migrate:undo --config dist/config/db.config.cjs --migrations-path dist/migrations",
     "db:undo:all": "sequelize-cli db:migrate:undo:all",
     "seed": "npx sequelize db:seed:all",
@@ -27,6 +26,7 @@
     "pg-hstore": "^2.3.4",
     "postgres": "^3.4.4",
     "sequelize": "^6.37.3",
+    "sequelize-typescript": "^2.1.6",
     "winston": "^3.13.0"
   },
   "devDependencies": {

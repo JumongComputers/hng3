@@ -1,61 +1,72 @@
-import { DataTypes, Model } from 'sequelize';
-import { baseConfig } from '../config/db-config';
-import Organization from './organization.model'; // Import Organization model for association
-import UserOrganization from './userOrganization.model';
+import { Column, DataType, Model, Table } from 'sequelize-typescript';
 
-class User extends Model {
-    public userId!: string;
-    public firstName!: string;
-    public lastName!: string;
-    public email!: string;
-    public password!: string;
-    public phone!: string;
-    public orgId?: string;
 
-    // static associate(models: any) {
-    //     User.belongsToMany(models.Organization, { through: models.UserOrganization });
-    // }
+@Table({ tableName: 'users', modelName: 'User', timestamps: true })
+export default class User extends Model<User> {
+  @Column({
+    type: DataType.UUID,
+    defaultValue: DataType.UUIDV4,
+    allowNull: false,
+    primaryKey: true, // Use primaryKey here
+  })
+  userId!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  firstName!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  lastName!: string;
+
+  @Column({
+    type: DataType.STRING,
+    unique: true,
+    allowNull: false,
+  })
+  email!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  password?: string;
+
+  @Column({
+    type: DataType.STRING,
+    unique: true,
+    allowNull: true,
+  })
+  phone?: string;
+
+  @Column({
+    type: DataType.UUID,
+    unique: true,
+    allowNull: true,
+  })
+  orgId?: string;
+ 
+  @Column({
+    type: DataType.DATE,
+    allowNull: false,
+  })
+  createdAt!: Date;
+
+ 
+  @Column({
+    type: DataType.DATE,
+    allowNull: false,
+  })
+  updatedAt!: Date;
+
+ 
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  deletedAt?: Date;
 }
-
-User.init(
-    {
-        userId: {
-            type: DataTypes.STRING,
-            primaryKey: true,
-            allowNull: false,
-        },
-        firstName: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        lastName: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        email: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: true,
-        },
-        password: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        phone: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        orgId: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-    },
-    {
-        ...baseConfig,
-        tableName: 'users',
-    }
-);
-
-
-User.belongsToMany(Organization, { through: UserOrganization });
-export default User;

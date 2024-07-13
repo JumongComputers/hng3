@@ -82,7 +82,7 @@ class OrganizationController{
         try {
             const { userId } = req.body;
             const { orgId } = req.params;
-            const organization = await organizationService.addusertoorganization(
+            const organization = await organizationService.addUserToOrganization(
                 orgId,
                 userId
             );

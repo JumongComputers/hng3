@@ -1,23 +1,26 @@
 export interface IUser {
-    id?: string;
+    userId: string;
     firstName: string;
     lastName: string;
     email: string;
     phone: string;
-    password: string ;
+    password: string;
     orgId?: string;
     
 }
 
 
 export interface IOrganization {
-    name: string;
-    description?: string;
     orgId?: string;
-
-}
+    name?: string ;
+    description?: string;
+    
+  }
 
 export interface IUserOrgy {
     userId: string;
-    orgId: string
-}
+    orgId: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+  }
+  

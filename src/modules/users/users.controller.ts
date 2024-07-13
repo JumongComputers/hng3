@@ -1,34 +1,31 @@
+// import { IUser } from './../../types/index';
 import { Request, Response, NextFunction } from 'express';
 import UserService from './users.service';
-import { IOrganization, IUser } from '../../types/index';
+import  {IUser}  from '../../types/index';
 import OrganizationService from '../organization/organization.service';
 
 const userService = new UserService();
 const organizationService = new OrganizationService();
 
-interface ISignupRequest extends Request {
+interface Bod extends Request {
     body: {
+      userId: string;
       firstName: string;
       lastName: string;
       email: string;
-      password: string;
       phone: string;
-    //   description: string;
-     
-    //   organizationName: string;
+      password: string;
+      // orgId?: string;
     };
   }
 
 class UserController {
-  signup = async (req: ISignupRequest, res: Response, next: NextFunction) => {
+  signup= async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {firstName, lastName, email, password, phone} = req.body;
+        // const {firstName, lastName, email, password, phone} = req.body;
       const result = await userService.createUser({
-        firstName,
-        lastName,
-        email,
-        password,
-        phone,
+        ...req.body
+          
       });
       const { accessToken, user } = result;
 

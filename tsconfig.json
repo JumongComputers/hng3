@@ -9,6 +9,7 @@
     "outDir": "./dist",                   // Output directory for compiled files
     "rootDir": "./src",                   // Root directory of TypeScript source files
     "resolveJsonModule": true,            // Include JSON files in the compilation
+    "experimentalDecorators": true,
     "typeRoots": ["./node_modules/@types", "./src/types","./src/config"] // Add types directory
   },
   "include": ["src/**/*.ts"],

@@ -1,44 +1,31 @@
-import { DataTypes, Model } from 'sequelize';
-import { baseConfig } from '../config/db-config';
-import User from './user.model'; // Import User model for association
+import { IOrganization } from './../types/index';
+import { Column, DataType, Model, Table, BelongsToMany } from 'sequelize-typescript';
+import User from './user.model';
 import UserOrganization from './userOrganization.model';
+import { CreationAttributes } from 'sequelize';
 
-class Organization extends Model {
-    public orgId!: string;
-    public name!: string;
-    public description!: string;
+@Table({ tableName: 'organizations', modelName: 'Organization', timestamps: true })
+export class Organization extends Model<Organization> implements IOrganization {
+  @Column({
+    type: DataType.UUID,
+    defaultValue: DataType.UUIDV4,
+    primaryKey: true,
+    allowNull: false,
+  })
+  orgId!: string;
 
-    // static associate(models: any) {
-    //     Organization.belongsToMany(models.User, { through: models.UserOrganization });
-    // }
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  name!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  description?: string;
+
+  @BelongsToMany(() => User, () => UserOrganization)
+  users!: Array<User & { UserOrganization: UserOrganization }>;
 }
-
-Organization.init(
-    {
-        orgId: {
-            type: DataTypes.STRING,
-            primaryKey: true,
-            allowNull: false,
-        },
-        name: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                notEmpty: {
-                    msg: 'Name is required',
-                },
-            },
-        },
-        description: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-    },
-    {
-        ...baseConfig,
-        tableName: 'organizations', // Correct table name
-    }
-);
-
-Organization.belongsToMany(User, { through: UserOrganization });
-export default Organization;

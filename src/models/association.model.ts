@@ -1,5 +1,5 @@
 import User from './user.model';
-import Organization from './organization.model';
+import {Organization} from './organization.model';
 import UserOrganization from './userOrganization.model';
 
 // Many-to-many relationship

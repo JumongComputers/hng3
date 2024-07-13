@@ -1,69 +1,81 @@
-import User from "../../models/user.model"
-import Exception from "../../exception"
-import Organization from "../../models/organization.model"
-import { IOrganization, IUser, IUserOrgy } from "../../types"
-import ERROR_MESSAGES from "../../constant/constants"
-import UserOrganization from "../../models/userOrganization.model"
-
-
-
-
+import { Organization } from "../../models/organization.model";
+import { IOrganization, IUserOrgy } from "../../types";
+import Exception from "../../exception";
+import ERROR_MESSAGES from "../../constant/constants";
+import UserOrganization from "../../models/userOrganization.model";
+import User from "../../models/user.model";
 
 class OrganizationService {
-    async createOrganization(organizationData:IOrganization) {
-        const organizations = await Organization.findOne({
-            where: { name: organizationData.name },
-        })
+  async createOrganization(organizationData: IOrganization) {
+    const existingOrganization = await Organization.findOne({
+      where: { name: organizationData.name },
+    });
 
-        if (organizations) {
-            throw new Exception(ERROR_MESSAGES.ORGANIZATION_EXISTS, 422)
-        }
-        
+    if (existingOrganization) {
+      throw new Exception(ERROR_MESSAGES.ORGANIZATION_EXISTS, 422);
+    }
+      if (organizationData){
         const organization = await Organization.create({
-            name: organizationData.name,
-            description: organizationData.description,
-        })
-     
-    
-        return organization
-           
-          
-        
+          name: organizationData.name as string || undefined, 
+          description: organizationData.description,
+        });
+
+        return organization;
+      }
+
+  }
+
+  async getOrganization(): Promise<IOrganization[] | null> {
+    const organizations = await Organization.findAll();
+
+    if (!organizations) {
+      throw new Exception(ERROR_MESSAGES.ORGANIZATION_NOT_FOUND, 422);
     }
 
-    async getOrganization():Promise<IOrganization[] | null>{
-        const organizations = await Organization.findAll()
+    return organizations;
+  }
 
-        if (!organizations){
-            throw new Exception(ERROR_MESSAGES.ORGANIZATION_NOT_FOUND, 422)
-        }
+  async getOneOrganization(orgId: string): Promise<IOrganization | null> {
+    const organization = await Organization.findOne({ where: { orgId } });
 
-        return organizations
+    if (!organization) {
+      throw new Exception(ERROR_MESSAGES.ORGANIZATION_NOT_FOUND, 422);
+    }
+    return organization;
+  }
+
+  async addUserToOrganization(orgId: string, userId: string): Promise<IUserOrgy | null> {
+    // Check if the organization exists
+    const organization = await Organization.findOne({where:{orgId}});
+    if (!organization) {
+      throw new Exception(ERROR_MESSAGES.ORGANIZATION_NOT_FOUND, 422);
     }
 
-    async getOneOrganization(orgId:string):Promise<IOrganization | null>{
-        const organization = await Organization.findOne({where:{orgId}})
-        
-        if (!organization){
-            throw new Exception(ERROR_MESSAGES.ORGANIZATION_NOT_FOUND, 422)
-        }
-        return organization
+    // Check if the user exists
+    const user = await User.findOne({where:{userId}});
+    if (!user) {
+      throw new Exception(ERROR_MESSAGES.USER_NOT_FOUND, 422);
     }
 
-    async addusertoorganization(orgId:string, userId:string):Promise<IUserOrgy | null>{
-        
-        const userOrganisation = await UserOrganization.findOne({where:{userId:userId, orgId:orgId}})
-        if (!userOrganisation){
-            throw new Exception(ERROR_MESSAGES.ORGANIZATION_NOT_FOUND, 422)
-        }
-        const userInOrganization = await UserOrganization.create({
-            userId:userId,
-            orgId:orgId,
-        })
-        return userInOrganization
+    // Check if the user is already associated with the organization
+    const existingUserOrganization = await UserOrganization.findOne({
+      where: { userId, orgId }
+    });
+
+    if (existingUserOrganization) {
+      throw new Exception(ERROR_MESSAGES.USER_EXISTS, 422);
     }
 
-    
+    // Create the user-organization association
+    const userOrganizationAttributes = {
+      userId:userId as string,
+      orgId:orgId as string,
+    };
+
+    const userInOrganization = await UserOrganization.create({...userOrganizationAttributes});
+
+    return userInOrganization;
+  }
 }
 
-export default OrganizationService
+export default OrganizationService;

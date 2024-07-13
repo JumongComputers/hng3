@@ -8,23 +8,23 @@ import { IUser } from '../../types';
 
 class UserService {
     async createUser(userData:IUser) {
-        const userExist = await User.findOne({
+        const userE = await User.findOne({
             where: { email: userData.email },
         })
 
-        if (userExist) {
+        if (userE) {
             throw new Exception(ERROR_MESSAGES.USER_EXISTS, 422)
         }
     
         const hashedPassword = await bcrypt.hash(userData.password, 10) 
-        const payload = {
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            email: userData.email,
-            phone: userData.phone,
-        }
+        // const payload = {
+        //     user.firstName: userData.firstName,
+        //     user.lastName: userData.lastName,
+        //     user.email: userData.email,
+        //     user.phone: userData.phone,
+        // }
         const user = await User.create({
-            ...payload,
+            user.firstName: userData.firstName,
             password: hashedPassword,
         })
      
